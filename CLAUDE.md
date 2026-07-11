@@ -12,13 +12,6 @@ The project is currently a fresh `create-next-app` scaffold: only the default ro
 
 The README states the project follows a Spec Driven Design workflow using `/spec` and `/spec-impl` commands from https://github.com/Klerith/fernando-skills, installed via `npx skills@latest add Klerith/fernando-skills`. If those commands aren't available in this session, check whether the skill has been installed (`npx skills@latest add Klerith/fernando-skills`) before starting feature work, since specs are expected to precede implementation here.
 
-## Commands
-
-- `npm run dev` — start the dev server (Turbopack by default in Next.js 16)
-- `npm run build` — production build
-- `npm run start` — run the production build
-- `npm run lint` — ESLint via `eslint.config.mjs` (flat config, extends `eslint-config-next` core-web-vitals + typescript)
-
 No test runner is configured yet.
 
 ## Stack notes
@@ -33,3 +26,6 @@ Per `AGENTS.md`, read the matching doc under `node_modules/next/dist/docs/` befo
 
 - **Middleware was renamed to Proxy.** A root-level `middleware.ts` no longer exists as a concept — use `proxy.ts` (`export function proxy(request)` or a default export), see `node_modules/next/dist/docs/01-app/01-getting-started/16-proxy.md`.
 - **Caching is opt-in via Cache Components**, not automatic full-route caching. `next.config.ts` currently does not set `cacheComponents: true`, so the app is on the default (previous) caching model. If you enable `cacheComponents`, components doing uncached dynamic work (reading `cookies()`, `headers()`, random/time values, etc.) must be wrapped in `<Suspense>` or marked `'use cache'`, or they'll error — see `node_modules/next/dist/docs/01-app/01-getting-started/08-caching.md`.
+
+## Skills
+Always use /frontend-design for make user interfaces
