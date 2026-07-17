@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static prototype reference material, not part of the Next.js app.
+    "references/**",
   ]),
 ]);
 
