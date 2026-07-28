@@ -14,12 +14,12 @@ export default function LoginPage() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setStoredUser({ name: (user || "PLAYER1").toUpperCase().slice(0, 10) });
-    router.push("/");
+    router.push("/games");
   };
 
   const playAsGuest = () => {
     setStoredUser(null);
-    router.push("/");
+    router.push("/games");
   };
 
   return (
