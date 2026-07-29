@@ -1,0 +1,12 @@
+# Default ignores of eslint-config-next (kept in sync with eslint.config.mjs)
+.next/**
+out/**
+build/**
+next-env.d.ts
+
+# Static prototype reference material, not part of the Next.js app.
+references/**
+
+# Dependencies and lockfiles
+node_modules
+package-lock.json
