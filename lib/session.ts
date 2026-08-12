@@ -1,11 +1,11 @@
 import { useSyncExternalStore } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export type StoredUser = { name: string } | null;
 
-export type SavedScore = { game: string; score: number; name: string; at: number };
+export type SavedScore = { game: string; score: number; name: string };
 
 const USER_KEY = "av_user";
-const SCORES_KEY = "av_scores";
 const USER_CHANGED_EVENT = "av-user-changed";
 
 export function getStoredUser(): StoredUser {
@@ -66,13 +66,15 @@ export function useStoredUser(): StoredUser {
   return useSyncExternalStore(onUserChange, getUserSnapshot, getServerSnapshot);
 }
 
-export function saveScore(entry: Omit<SavedScore, "at">): void {
-  if (typeof window === "undefined") return;
-  try {
-    const all: SavedScore[] = JSON.parse(localStorage.getItem(SCORES_KEY) || "[]");
-    all.push({ ...entry, at: Date.now() });
-    localStorage.setItem(SCORES_KEY, JSON.stringify(all));
-  } catch {
-    // ignore malformed storage
-  }
+export async function saveScore(
+  entry: SavedScore
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = createClient();
+  const { error } = await supabase.from("scores").insert({
+    game_id: entry.game,
+    name: entry.name,
+    score: entry.score,
+  });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }

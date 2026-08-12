@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import type { Game } from "@/lib/data";
 
-export default function GameCard({ game }: { game: Game }) {
+export default function GameCard({ game, best }: { game: Game; best: number }) {
   const router = useRouter();
   const tiltRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +26,13 @@ export default function GameCard({ game }: { game: Game }) {
   const goToGame = () => router.push(`/game/${game.id}`);
 
   return (
-    <div ref={tiltRef} className="card" onMouseMove={onMove} onMouseLeave={onLeave} onClick={goToGame}>
+    <div
+      ref={tiltRef}
+      className="card"
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      onClick={goToGame}
+    >
       <div className="cover">
         <div className={"cover-bg " + game.cover}></div>
         <div className="label">{game.cat}</div>
@@ -37,10 +43,17 @@ export default function GameCard({ game }: { game: Game }) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>{game.best.toLocaleString("es-ES")}</b>
+            <b>{best.toLocaleString("es-ES")}</b>
           </div>
           <button
-            className={"btn " + (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")}
+            className={
+              "btn " +
+              (game.color === "magenta"
+                ? "magenta"
+                : game.color === "yellow"
+                  ? "yellow"
+                  : "")
+            }
             onClick={(e) => {
               e.stopPropagation();
               goToGame();
