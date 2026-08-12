@@ -4,24 +4,21 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import type { Game } from "@/lib/data";
 import { saveScore, useStoredUser } from "@/lib/session";
-import AsteroidesCanvas from "@/components/games/AsteroidesCanvas";
-import type { AsteroidesState } from "@/lib/games/asteroides/engine";
+import { GAME_REGISTRY } from "@/components/games/registry";
 
 const DEMO_SCORE = 15420;
 const DEMO_LIVES = 3;
 const DEMO_LEVEL = 2;
 
-const INITIAL_ENGINE_STATE: AsteroidesState = {
-  status: "playing",
-  score: 0,
-  lives: 3,
-  level: 1,
-  tripleShotRemaining: 0,
+type EngineStateShape = {
+  score?: number;
+  level?: number;
+  lives?: number;
 };
 
 export default function GamePlayerClient({ game }: { game: Game }) {
   const storedUser = useStoredUser();
-  const isAsteroides = game.id === "asteroids";
+  const entry = GAME_REGISTRY[game.id];
 
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
@@ -29,14 +26,13 @@ export default function GamePlayerClient({ game }: { game: Game }) {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [engineState, setEngineState] =
-    useState<AsteroidesState>(INITIAL_ENGINE_STATE);
+  const [engineState, setEngineState] = useState<unknown>(null);
   const [restartSignal, setRestartSignal] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
   const name = nameOverride ?? storedUser?.name ?? "INVITADO";
 
   const handleStateChange = useCallback(
-    (state: AsteroidesState) => setEngineState(state),
+    (state: unknown) => setEngineState(state),
     []
   );
   const handleGameOver = useCallback((score: number) => {
@@ -44,22 +40,28 @@ export default function GamePlayerClient({ game }: { game: Game }) {
     setOver(true);
   }, []);
 
-  const score = isAsteroides ? engineState.score : DEMO_SCORE;
-  const lives = isAsteroides ? engineState.lives : DEMO_LIVES;
-  const level = isAsteroides ? engineState.level : DEMO_LEVEL;
-  const displayedFinalScore = isAsteroides ? finalScore : DEMO_SCORE;
+  const liveState = engineState as EngineStateShape | null;
+  const score = entry ? (liveState?.score ?? 0) : DEMO_SCORE;
+  const lives = entry ? (liveState?.lives ?? 0) : DEMO_LIVES;
+  const level = entry ? (liveState?.level ?? 1) : DEMO_LEVEL;
+  const displayedFinalScore = entry ? finalScore : DEMO_SCORE;
+  const showLives = entry ? entry.hasLives : true;
+  const extraStatValue =
+    entry?.extraStat && engineState !== null
+      ? entry.extraStat.select(engineState)
+      : null;
 
   const restart = () => {
     setPaused(false);
     setOver(false);
     setSaved(false);
     setSaveError(null);
-    if (isAsteroides) setRestartSignal((s) => s + 1);
+    if (entry) setRestartSignal((s) => s + 1);
   };
 
   const handleEndClick = () => {
-    if (isAsteroides) {
-      setFinalScore(engineState.score);
+    if (entry) {
+      setFinalScore(liveState?.score ?? 0);
       setPaused(true);
     }
     setOver(true);
@@ -95,19 +97,21 @@ export default function GamePlayerClient({ game }: { game: Game }) {
             <div className="l">Puntuación</div>
             <div className="v">{score.toLocaleString("es-ES")}</div>
           </div>
-          <div className="hud-stat lives">
-            <div className="l">Vidas</div>
-            <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
-          </div>
+          {showLives && (
+            <div className="hud-stat lives">
+              <div className="l">Vidas</div>
+              <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
+            </div>
+          )}
           <div className="hud-stat level">
             <div className="l">Nivel</div>
             <div className="v">{String(level).padStart(2, "0")}</div>
           </div>
-          {isAsteroides && engineState.tripleShotRemaining > 0 && (
+          {extraStatValue !== null && (
             <div className="hud-stat">
-              <div className="l">Disparo triple</div>
+              <div className="l">{entry?.extraStat?.label}</div>
               <div className="v" style={{ color: "var(--cyan)" }}>
-                {engineState.tripleShotRemaining.toFixed(1)}s
+                {extraStatValue}
               </div>
             </div>
           )}
@@ -117,7 +121,7 @@ export default function GamePlayerClient({ game }: { game: Game }) {
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
           <button className="btn magenta" onClick={handleEndClick}>
-            {isAsteroides ? "RENDIRSE" : "FIN"}
+            {entry ? "RENDIRSE" : "FIN"}
           </button>
           <Link href={`/game/${game.id}`} className="btn ghost">
             SALIR
@@ -127,8 +131,8 @@ export default function GamePlayerClient({ game }: { game: Game }) {
 
       <div className="crt">
         <div className="crt-screen">
-          {isAsteroides ? (
-            <AsteroidesCanvas
+          {entry ? (
+            <entry.Canvas
               paused={paused}
               onStateChange={handleStateChange}
               onGameOver={handleGameOver}
@@ -182,7 +186,7 @@ export default function GamePlayerClient({ game }: { game: Game }) {
             <div className="final">
               {displayedFinalScore.toLocaleString("es-ES")}
             </div>
-            {isAsteroides ? (
+            {entry ? (
               !saved ? (
                 <div className="input-row">
                   <input
