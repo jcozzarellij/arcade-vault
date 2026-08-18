@@ -859,6 +859,27 @@ a {
   filter: drop-shadow(0 0 6px rgba(245, 255, 0, 0.45));
 }
 
+.cover-viper {
+  background: radial-gradient(circle at 25% 15%, #052e1c, #05080a 75%);
+}
+.cover-viper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 64%, var(--green) 0 11px, transparent 12px),
+    radial-gradient(circle at 26% 48%, var(--green) 0 11px, transparent 12px),
+    radial-gradient(circle at 38% 64%, var(--green) 0 12px, transparent 13px),
+    radial-gradient(circle at 50% 48%, var(--green) 0 12px, transparent 13px),
+    radial-gradient(circle at 62% 62%, var(--green) 0 13px, transparent 14px),
+    radial-gradient(circle at 73% 46%, var(--green) 0 14px, transparent 15px),
+    radial-gradient(circle at 83% 36%, var(--green) 0 17px, transparent 18px),
+    radial-gradient(circle at 88% 30%, #04180d 0 3px, transparent 4px),
+    radial-gradient(circle at 89% 29%, var(--cyan) 0 2px, transparent 3px),
+    radial-gradient(circle at 94% 22%, var(--magenta) 0 8px, transparent 9px);
+  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.45));
+}
+
 /* ===== detail screen ===== */
 .av-detail {
   display: grid;
