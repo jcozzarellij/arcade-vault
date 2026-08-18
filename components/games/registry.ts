@@ -3,6 +3,7 @@ import AsteroidesCanvas from "@/components/games/AsteroidesCanvas";
 import type { AsteroidesState } from "@/lib/games/asteroides/engine";
 import TetrisCanvas from "@/components/games/TetrisCanvas";
 import type { TetrisState } from "@/lib/games/tetris/engine";
+import ArkanoidCanvas from "@/components/games/ArkanoidCanvas";
 
 export type GameCanvasProps = {
   paused: boolean;
@@ -38,5 +39,9 @@ export const GAME_REGISTRY: Record<string, GameEntry> = {
       label: "Líneas",
       select: (s) => String((s as TetrisState).lines),
     },
+  },
+  arkanoid: {
+    Canvas: ArkanoidCanvas,
+    hasLives: true,
   },
 };
