@@ -1,6 +1,6 @@
 # SPEC 08 — Motor real de Arkanoid
 
-> **Status:** aprobado
+> **Status:** implementado
 > **Depends on:** 05-asteroides-game-engine, 06-leaderboard-y-catalogo-supabase, 07-tetris-game-engine
 > **Date:** 2026-08-17
 > **Objective:** Portar el juego de Arkanoid de `references/started_games/04-arkanoid` (`game.js` + `levels.js`) a un motor real en TypeScript, jugable en `/game/arkanoid/play`, agregando una nueva fila `arkanoid` al catálogo Supabase y registrándolo en el `components/games/registry.ts` ya existente junto a `asteroids` y `tetris`.
