@@ -4,6 +4,8 @@ import type { AsteroidesState } from "@/lib/games/asteroides/engine";
 import TetrisCanvas from "@/components/games/TetrisCanvas";
 import type { TetrisState } from "@/lib/games/tetris/engine";
 import ArkanoidCanvas from "@/components/games/ArkanoidCanvas";
+import SnakeCanvas from "@/components/games/SnakeCanvas";
+import type { SnakeState } from "@/lib/games/snake/engine";
 
 export type GameCanvasProps = {
   paused: boolean;
@@ -43,5 +45,13 @@ export const GAME_REGISTRY: Record<string, GameEntry> = {
   arkanoid: {
     Canvas: ArkanoidCanvas,
     hasLives: true,
+  },
+  snake: {
+    Canvas: SnakeCanvas,
+    hasLives: false,
+    extraStat: {
+      label: "Longitud",
+      select: (s) => String((s as SnakeState).length),
+    },
   },
 };
