@@ -64,6 +64,21 @@ Rules:
 - `reset()` must fully re-initialize every field so the same `Engine` instance can be
   reused across a "JUGAR DE NUEVO" restart without recreating it.
 
+**Precedent: real image assets.** `lib/games/snake/engine.ts` (spec 09) is the first
+engine that draws a real spritesheet frame instead of vector shapes. Loading an `Image`
+still can't happen inside the engine (that would touch `document`), so the contract
+gains one explicit, documented sixth method for this case only:
+
+```ts
+setSprites(image: HTMLImageElement | null): void;
+```
+
+The canvas component owns the `new Image()` / `onload` lifecycle and calls
+`setSprites()` once the asset is ready; the engine only ever holds the already-loaded
+`HTMLImageElement` reference and falls back to a vector shape in `draw()` while it's
+`null`. A future engine needing an image asset should follow this same split rather than
+inventing a different extension point.
+
 ---
 
 ## B. Canvas component template — `components/games/<Name>Canvas.tsx`

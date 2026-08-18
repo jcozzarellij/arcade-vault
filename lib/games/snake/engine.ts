@@ -34,7 +34,7 @@ export type SnakeInput = {
 export type SnakeState = {
   status: "playing" | "gameover"; // sin "dead": Snake no tiene vidas/respawn
   score: number;
-  level: number; // 1..21, cíclico — índice de FRUIT_ORDER que define la fruta actual
+  level: number; // 1..FRUIT_ORDER.length, cíclico — índice de FRUIT_ORDER que define la fruta actual
   length: number; // segmentos actuales de la serpiente
 };
 
